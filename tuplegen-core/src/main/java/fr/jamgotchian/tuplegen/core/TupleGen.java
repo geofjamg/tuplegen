@@ -30,7 +30,7 @@ import org.apache.velocity.app.VelocityEngine;
  */
 public class TupleGen {
 
-    private static final TupleModel TUPLE_MODEL = new TupleModel();
+    private static final TupleModel NAMED_TUPLE_MODEL = new NamedTupleModel();
 
     private final VelocityEngine ve;
 
@@ -47,12 +47,12 @@ public class TupleGen {
         context1.put("tupleLength", parameters.getTupleLength());
         context1.put("packageName", parameters.getPackageName());
         context1.put("sourceVersion", parameters.getSourceVersion());
-        context1.put("tupleModel", TUPLE_MODEL);
+        context1.put("tupleModel", NAMED_TUPLE_MODEL);
         t.merge(context1, writer);
     }
 
     public void generate(TupleGenParameters parameters, File generatedSources, TupleGenLogger logger) throws IOException {
-        String tupleName = TUPLE_MODEL.getTupleName(parameters.getTupleLength());
+        String tupleName = NAMED_TUPLE_MODEL.getTupleName(parameters.getTupleLength());
         String fileName = tupleName.substring(0, 1).toUpperCase() + tupleName.substring(1, tupleName.length()) + ".java";
         String packageRelDir = parameters.getPackageName().replace('.', '/');
         File packageDir = new File(generatedSources, packageRelDir);

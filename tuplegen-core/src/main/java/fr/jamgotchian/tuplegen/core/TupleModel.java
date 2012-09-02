@@ -20,59 +20,9 @@ package fr.jamgotchian.tuplegen.core;
  *
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at gmail.com>
  */
-public class TupleModel {
+public interface TupleModel {
 
-    public String getTupleName(int length) {
-        switch (length) {
-            case 1: return "single";
-            case 2: return "pair";
-            case 3: return "triple";
-            case 4: return "quadruple";
-            case 5: return "quintuple";
-            case 6: return "sextuple";
-            case 7: return "septuple";
-            case 8: return "octuple";
-            case 9: return "nonuple";
-            case 10: return "decuple";
-            case 11: return "undecuple";
-            case 12: return "duodecuple";
-            case 13: return "tredecuple";
-            case 14: return "quattuordecuple";
-            case 15: return "quindecuple";
-            case 16: return "sexdecuple";
-            case 17: return "septendecuple";
-            case 18: return "octodecuple";
-            case 19: return "novemdecuple";
-            case 20: return "vigenuple";
-            default: throw new RuntimeException("Don't know how to name a "
-                    + length + "-tuple");
-        }
-    }
+    String getTupleName(int length);
 
-    public String getOrdinalNumberName(int number) {
-        switch (number) {
-            case 1: return "first";
-            case 2: return "second";
-            case 3: return "third";
-            case 4: return "fourth";
-            case 5: return "fifth";
-            case 6: return "sixth";
-            case 7: return "seventh";
-            case 8: return "eighth";
-            case 9: return "ninth";
-            case 10: return "tenth";
-            case 11: return "eleventh";
-            case 12: return "twelfth";
-            case 13: return "thirteenth";
-            case 14: return "fourteenth";
-            case 15: return "fifteenth";
-            case 16: return "sixteenth";
-            case 17: return "seventeenth";
-            case 18: return "eighteenth";
-            case 19: return "nineteenth";
-            case 20: return "twentieth";
-            default: throw new RuntimeException("Don't know how to name the ordinal number"
-                    + number);
-        }
-    }
+    String getOrdinalNumberName(int number);
 }
