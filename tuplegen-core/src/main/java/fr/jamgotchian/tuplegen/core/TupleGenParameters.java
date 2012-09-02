@@ -24,7 +24,7 @@ public class TupleGenParameters {
 
     private int tupleLength;
 
-    private TupleKind tupleKind = TupleKind.NAMED;
+    private TupleKind tupleKind;
 
     private String packageName;
 

@@ -19,9 +19,9 @@ package fr.jamgotchian.tuplegen.plugin;
 import fr.jamgotchian.tuplegen.core.TupleGen;
 import fr.jamgotchian.tuplegen.core.TupleGenLogger;
 import fr.jamgotchian.tuplegen.core.TupleGenParameters;
-import fr.jamgotchian.tuplegen.core.TupleKind;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -50,10 +50,10 @@ public class TupleGenMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
-     * Tuple length.
+     * The name of the generated source package.
      * @parameter
      */
-    private Integer tupleLength;
+    private String packageName;
 
     /**
      * Generated source version.
@@ -62,40 +62,36 @@ public class TupleGenMojo extends AbstractMojo {
     private Float sourceVersion;
 
     /**
-     * Tuple kind.
+     * Tuple defintion list.
      * @parameter
      */
-    private TupleKind tupleKind;
-
-    /**
-     * The name of the generated source package.
-     * @parameter
-     */
-    private String packageName;
+    private List<Tuple> tuples;
 
     private final MavenTupleGenLogger logger = new MavenTupleGenLogger();
 
     public void execute() throws MojoExecutionException {
-        if (tupleLength <= 0) {
-            throw new MojoExecutionException("tupleLength should be greater than zero");
-        }
         if (packageName == null) {
             throw new MojoExecutionException("packageName parameter is not set");
         }
-        TupleGenParameters parameters = new TupleGenParameters();
-        parameters.setPackageName(packageName);
-        parameters.setTupleLength(tupleLength);
-        if (sourceVersion != null) {
-            parameters.setSourceVersion(sourceVersion);
-        }
-        if (tupleKind != null) {
-            parameters.setTupleKind(tupleKind);
-        }
+
         File generatedSources = new File(project.getBasedir(), "target/generated-sources/tuplegen");
         project.addCompileSourceRoot(generatedSources.getAbsolutePath());
+
         try {
             TupleGen generator = new TupleGen();
-            generator.generate(parameters, generatedSources, logger);
+            for (Tuple tuple : tuples) {
+                if (tuple.getLength() <= 0) {
+                    throw new MojoExecutionException("tupleLength should be greater than zero");
+                }
+                TupleGenParameters parameters = new TupleGenParameters();
+                parameters.setPackageName(packageName);
+                parameters.setTupleKind(tuple.getKind());
+                parameters.setTupleLength(tuple.getLength());
+                if (sourceVersion != null) {
+                    parameters.setSourceVersion(sourceVersion);
+                }
+                generator.generate(parameters, generatedSources, logger);
+            }
         } catch (IOException e) {
             throw new MojoExecutionException(e.toString(), e);
         }
