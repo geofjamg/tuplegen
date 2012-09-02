@@ -61,9 +61,9 @@ public class GenericTupleModel implements TupleModel {
     }
 
     @Override
-    public String getOrdinalNumberName(int number) {
+    public String getElementName(int ordinal) {
         if (latinName) {
-            switch (number) {
+            switch (ordinal) {
                 case 1: return "first";
                 case 2: return "second";
                 case 3: return "third";
@@ -85,10 +85,10 @@ public class GenericTupleModel implements TupleModel {
                 case 19: return "nineteenth";
                 case 20: return "twentieth";
                 default: throw new RuntimeException("Don't know how to name the ordinal number"
-                        + number);
+                        + ordinal);
             }
         } else {
-            return "elt" + number;
+            return "elt" + ordinal;
         }
     }
 }

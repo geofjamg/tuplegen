@@ -24,5 +24,5 @@ public interface TupleModel {
 
     String getTupleName(int length);
 
-    String getOrdinalNumberName(int number);
+    String getElementName(int number);
 }
