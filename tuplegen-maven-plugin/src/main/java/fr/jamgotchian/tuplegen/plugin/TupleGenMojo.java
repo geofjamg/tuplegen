@@ -18,6 +18,7 @@ package fr.jamgotchian.tuplegen.plugin;
 
 import fr.jamgotchian.tuplegen.core.TupleGen;
 import fr.jamgotchian.tuplegen.core.TupleGenLogger;
+import fr.jamgotchian.tuplegen.core.TupleGenParameters;
 import java.io.File;
 import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -71,14 +72,17 @@ public class TupleGenMojo extends AbstractMojo {
         if (packageName == null) {
             throw new MojoExecutionException("packageName parameter is not set");
         }
-        if (sourceVersion == null) {
-            sourceVersion = 1.6f;
+        TupleGenParameters parameters = new TupleGenParameters();
+        parameters.setPackageName(packageName);
+        parameters.setTupleLength(tupleLength);
+        if (sourceVersion != null) {
+            parameters.setSourceVersion(sourceVersion);
         }
         File generatedSources = new File(project.getBasedir(), "target/generated-sources/tuplegen");
         project.addCompileSourceRoot(generatedSources.getAbsolutePath());
         try {
             TupleGen generator = new TupleGen();
-            generator.generate(tupleLength, packageName, sourceVersion, generatedSources, logger);
+            generator.generate(parameters, generatedSources, logger);
         } catch (IOException e) {
             throw new MojoExecutionException(e.toString(), e);
         }

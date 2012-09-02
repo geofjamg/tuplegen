@@ -41,21 +41,20 @@ public class TupleGen {
         ve.init();
     }
 
-    public void generate(int tupleLength, String packageName, float sourceVersion, Writer writer) {
+    public void generate(TupleGenParameters parameters, Writer writer) {
         Template t = ve.getTemplate("vm/java/tuple.vm");
         VelocityContext context1 = new VelocityContext();
-        context1.put("tupleLength", tupleLength);
-        context1.put("packageName", packageName);
-        context1.put("sourceVersion", sourceVersion);
+        context1.put("tupleLength", parameters.getTupleLength());
+        context1.put("packageName", parameters.getPackageName());
+        context1.put("sourceVersion", parameters.getSourceVersion());
         context1.put("tupleModel", TUPLE_MODEL);
         t.merge(context1, writer);
     }
 
-    public void generate(int tupleLength, String packageName, float sourceVersion,
-                         File generatedSources, TupleGenLogger logger) throws IOException {
-        String tupleName = TUPLE_MODEL.getTupleName(tupleLength);
+    public void generate(TupleGenParameters parameters, File generatedSources, TupleGenLogger logger) throws IOException {
+        String tupleName = TUPLE_MODEL.getTupleName(parameters.getTupleLength());
         String fileName = tupleName.substring(0, 1).toUpperCase() + tupleName.substring(1, tupleName.length()) + ".java";
-        String packageRelDir = packageName.replace('.', '/');
+        String packageRelDir = parameters.getPackageName().replace('.', '/');
         File packageDir = new File(generatedSources, packageRelDir);
         logger.log("generating...");
         logger.log(packageRelDir + "/" + fileName);
@@ -64,7 +63,7 @@ public class TupleGen {
         File tupleFile = new File(packageDir, fileName);
         Writer writer = new FileWriter(tupleFile);
         try {
-            generate(tupleLength, packageName, sourceVersion, writer);
+            generate(parameters, writer);
         } finally {
             writer.close();
         }
