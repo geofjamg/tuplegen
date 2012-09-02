@@ -45,7 +45,7 @@ public class $className<T1#foreach ($i in $rangeExcludingFirst), T$i#end> {
     @Override
     public int hashCode() {
 #if ($sourceVersion >= 1.7)
-        return Objects.hashCode($tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), $tupleModel.getOrdinalNumberName($i)#end);
+        return Objects.hash($tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), $tupleModel.getOrdinalNumberName($i)#end);
 #else
         return Arrays.hashCode(new Object[] {$tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), $tupleModel.getOrdinalNumberName($i)#end});
 #end
