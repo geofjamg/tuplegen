@@ -62,6 +62,12 @@ public class TupleGenMojo extends AbstractMojo {
     private Float sourceVersion;
 
     /**
+     * Generated source encoding.
+     * @parameter
+     */
+    private String sourceEncoding;
+
+    /**
      * Generic tuples defintion.
      * @parameter
      */
@@ -99,6 +105,9 @@ public class TupleGenMojo extends AbstractMojo {
                 parameters.setTupleLength(genericTuple.getLength());
                 if (sourceVersion != null) {
                     parameters.setSourceVersion(sourceVersion);
+                }
+                if (sourceEncoding != null) {
+                    parameters.setSourceEncoding(sourceEncoding);
                 }
                 generator.generate(parameters, generatedSources, logger);
             }

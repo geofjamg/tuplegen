@@ -44,7 +44,7 @@ public class TupleGen {
     }
 
     public void generate(TupleGenParameters parameters, Writer writer) {
-        Template t = ve.getTemplate("vm/java/tuple.vm");
+        Template t = ve.getTemplate("vm/java/tuple.vm", parameters.getSourceEncoding());
         VelocityContext context1 = new VelocityContext();
         context1.put("tupleLength", parameters.getTupleLength());
         context1.put("packageName", parameters.getPackageName());

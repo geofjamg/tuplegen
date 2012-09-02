@@ -30,6 +30,8 @@ public class TupleGenParameters {
 
     private float sourceVersion = 1.6f;
 
+    private String sourceEncoding = "UTF-8";
+
     public TupleGenParameters() {
     }
 
@@ -63,6 +65,14 @@ public class TupleGenParameters {
 
     public void setSourceVersion(float sourceVersion) {
         this.sourceVersion = sourceVersion;
+    }
+
+    public String getSourceEncoding() {
+        return sourceEncoding;
+    }
+
+    public void setSourceEncoding(String sourceEncoding) {
+        this.sourceEncoding = sourceEncoding;
     }
 
 }
