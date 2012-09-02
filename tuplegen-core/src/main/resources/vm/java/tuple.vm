@@ -1,0 +1,95 @@
+package $packageName;
+
+#if ($sourceVersion >= 1.7)
+import java.util.Objects;
+#else
+import java.util.Arrays;
+#end
+#set ($tupleName = $tupleModel.getTupleName($tupleLength))
+## Upper case the first letter
+#set ($className = "$tupleName.substring(0, 1).toUpperCase()$tupleName.substring(1, $tupleName.length())")
+
+/**
+ * An immutable ${tupleLength}-tuple
+ */
+#if ($tupleLength == 1)
+#set ($rangeExcludingFirst = [])
+#else
+#set ($rangeExcludingFirst = [2..$tupleLength])
+#end
+public class $className<T1#foreach ($i in $rangeExcludingFirst), T$i#end> {
+#set ($tupleLengthMinusOne = $tupleLength - 1)
+
+## Fields
+#foreach ($i in [1..$tupleLength])
+    private final T$i $tupleModel.getOrdinalNumberName($i);
+
+#end
+## Constructors
+    public $className(T1 $tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), T$i $tupleModel.getOrdinalNumberName($i)#end) {
+#foreach ($i in [1..$tupleLength])
+        this.$tupleModel.getOrdinalNumberName($i) = $tupleModel.getOrdinalNumberName($i);
+#end
+    }
+
+## Accessors
+#foreach ($i in [1..$tupleLength])
+#set ($fieldName = $tupleModel.getOrdinalNumberName($i))
+## Upper case the first letter
+#set ($methodName = "get$fieldName.substring(0, 1).toUpperCase()$fieldName.substring(1, $fieldName.length())")
+    public T$i $methodName() {
+        return $fieldName;
+    }
+
+#end
+    @Override
+    public int hashCode() {
+#if ($sourceVersion >= 1.7)
+        return Objects.hashCode($tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), $tupleModel.getOrdinalNumberName($i)#end);
+#else
+        return Arrays.hashCode(new Object[] {$tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), $tupleModel.getOrdinalNumberName($i)#end});
+#end
+    }
+
+#if ($sourceVersion < 1.7)
+    private static boolean equals(Object obj1, Object obj2) {
+        if (obj1 == null && obj2 == null) {
+            return true;
+        } else if (obj1 != null && obj2 != null) {
+            return obj1.equals(obj2);
+        } else {
+            return false;
+        }
+    }
+
+#end
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof $className) {
+            $className other = ($className) obj;
+#if ($sourceVersion >= 1.7)
+            return Objects.equals(this.$tupleModel.getOrdinalNumberName(1), other.$tupleModel.getOrdinalNumberName(1))#foreach ($i in $rangeExcludingFirst) && Objects.equals(this.$tupleModel.getOrdinalNumberName($i), other.$tupleModel.getOrdinalNumberName($i))#end;
+#else
+            return equals(this.$tupleModel.getOrdinalNumberName(1), other.$tupleModel.getOrdinalNumberName(1))#foreach ($i in $rangeExcludingFirst) && equals(this.$tupleModel.getOrdinalNumberName($i), other.$tupleModel.getOrdinalNumberName($i))#end;
+#end
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("(")
+            .append($tupleModel.getOrdinalNumberName(1))
+#foreach ($i in $rangeExcludingFirst)
+            .append(", ").append($tupleModel.getOrdinalNumberName($i))
+#end
+            .append(")").toString();
+    }
+
+## Static factory
+    public static <T1#foreach ($i in $rangeExcludingFirst), T$i#end> $className<T1#foreach ($i in $rangeExcludingFirst), T$i#end> make(T1 $tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), T$i $tupleModel.getOrdinalNumberName($i)#end) {
+        return new $className<T1#foreach ($i in $rangeExcludingFirst), T$i#end>($tupleModel.getOrdinalNumberName(1)#foreach ($i in $rangeExcludingFirst), $tupleModel.getOrdinalNumberName($i)#end);
+    }
+
+}
