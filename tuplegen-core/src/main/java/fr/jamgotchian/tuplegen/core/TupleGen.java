@@ -41,17 +41,18 @@ public class TupleGen {
         ve.init();
     }
 
-    public void generate(int tupleLength, String packageName, Writer writer) {
+    public void generate(int tupleLength, String packageName, float sourceVersion, Writer writer) {
         Template t = ve.getTemplate("vm/java/tuple.vm");
         VelocityContext context1 = new VelocityContext();
         context1.put("tupleLength", tupleLength);
         context1.put("packageName", packageName);
-        context1.put("sourceVersion", 1.6);
+        context1.put("sourceVersion", sourceVersion);
         context1.put("tupleModel", TUPLE_MODEL);
         t.merge(context1, writer);
     }
 
-    public void generate(int tupleLength, String packageName, File generatedSources, TupleGenLogger logger) throws IOException {
+    public void generate(int tupleLength, String packageName, float sourceVersion,
+                         File generatedSources, TupleGenLogger logger) throws IOException {
         String tupleName = TUPLE_MODEL.getTupleName(tupleLength);
         String fileName = tupleName.substring(0, 1).toUpperCase() + tupleName.substring(1, tupleName.length()) + ".java";
         String packageRelDir = packageName.replace('.', '/');
@@ -63,7 +64,7 @@ public class TupleGen {
         File tupleFile = new File(packageDir, fileName);
         Writer writer = new FileWriter(tupleFile);
         try {
-            generate(tupleLength, packageName, writer);
+            generate(tupleLength, packageName, sourceVersion, writer);
         } finally {
             writer.close();
         }

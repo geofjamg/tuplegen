@@ -54,7 +54,13 @@ public class TupleGenMojo extends AbstractMojo {
     private Integer tupleLength;
 
     /**
-     * the name of the generated source package.
+     * Generated source version.
+     * @parameter
+     */
+    private Float sourceVersion;
+
+    /**
+     * The name of the generated source package.
      * @parameter
      */
     private String packageName;
@@ -65,11 +71,14 @@ public class TupleGenMojo extends AbstractMojo {
         if (packageName == null) {
             throw new MojoExecutionException("packageName parameter is not set");
         }
+        if (sourceVersion == null) {
+            sourceVersion = 1.6f;
+        }
         File generatedSources = new File(project.getBasedir(), "target/generated-sources/tuplegen");
         project.addCompileSourceRoot(generatedSources.getAbsolutePath());
         try {
             TupleGen generator = new TupleGen();
-            generator.generate(tupleLength, packageName, generatedSources, logger);
+            generator.generate(tupleLength, packageName, sourceVersion, generatedSources, logger);
         } catch (IOException e) {
             throw new MojoExecutionException(e.toString(), e);
         }
