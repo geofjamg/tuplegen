@@ -23,7 +23,7 @@ package fr.jamgotchian.tuplegen.core;
 public class BasicTupleModel implements TupleModel {
 
     public String getTupleName(int length) {
-        return "n" + length + "Tuple";
+        return "tuple" + length;
     }
 
     public String getOrdinalNumberName(int number) {
