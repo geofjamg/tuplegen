@@ -32,6 +32,8 @@ public class TupleGenParameters {
 
     private String sourceEncoding = "UTF-8";
 
+    private SourceLanguage sourceLanguage = SourceLanguage.JAVA;
+
     public TupleGenParameters() {
     }
 
@@ -73,6 +75,14 @@ public class TupleGenParameters {
 
     public void setSourceEncoding(String sourceEncoding) {
         this.sourceEncoding = sourceEncoding;
+    }
+
+    public SourceLanguage getSourceLanguage() {
+        return sourceLanguage;
+    }
+
+    public void setSourceLanguage(SourceLanguage sourceLanguage) {
+        this.sourceLanguage = sourceLanguage;
     }
 
 }
