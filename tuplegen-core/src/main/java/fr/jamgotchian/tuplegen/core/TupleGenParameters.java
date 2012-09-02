@@ -24,6 +24,8 @@ public class TupleGenParameters {
 
     private int tupleLength;
 
+    private TupleKind tupleKind = TupleKind.NAMED;
+
     private String packageName;
 
     private float sourceVersion = 1.6f;
@@ -37,6 +39,14 @@ public class TupleGenParameters {
 
     public void setTupleLength(int tupleLength) {
         this.tupleLength = tupleLength;
+    }
+
+    public TupleKind getTupleKind() {
+        return tupleKind;
+    }
+
+    public void setTupleKind(TupleKind tupleKind) {
+        this.tupleKind = tupleKind;
     }
 
     public String getPackageName() {
@@ -54,5 +64,5 @@ public class TupleGenParameters {
     public void setSourceVersion(float sourceVersion) {
         this.sourceVersion = sourceVersion;
     }
-    
+
 }

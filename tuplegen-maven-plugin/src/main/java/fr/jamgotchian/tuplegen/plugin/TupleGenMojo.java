@@ -19,6 +19,7 @@ package fr.jamgotchian.tuplegen.plugin;
 import fr.jamgotchian.tuplegen.core.TupleGen;
 import fr.jamgotchian.tuplegen.core.TupleGenLogger;
 import fr.jamgotchian.tuplegen.core.TupleGenParameters;
+import fr.jamgotchian.tuplegen.core.TupleKind;
 import java.io.File;
 import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -61,6 +62,12 @@ public class TupleGenMojo extends AbstractMojo {
     private Float sourceVersion;
 
     /**
+     * Tuple kind.
+     * @parameter
+     */
+    private TupleKind tupleKind;
+
+    /**
      * The name of the generated source package.
      * @parameter
      */
@@ -77,6 +84,9 @@ public class TupleGenMojo extends AbstractMojo {
         parameters.setTupleLength(tupleLength);
         if (sourceVersion != null) {
             parameters.setSourceVersion(sourceVersion);
+        }
+        if (tupleKind != null) {
+            parameters.setTupleKind(tupleKind);
         }
         File generatedSources = new File(project.getBasedir(), "target/generated-sources/tuplegen");
         project.addCompileSourceRoot(generatedSources.getAbsolutePath());
