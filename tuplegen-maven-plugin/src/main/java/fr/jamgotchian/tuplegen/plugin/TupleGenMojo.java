@@ -76,6 +76,9 @@ public class TupleGenMojo extends AbstractMojo {
     private final MavenTupleGenLogger logger = new MavenTupleGenLogger();
 
     public void execute() throws MojoExecutionException {
+        if (tupleLength <= 0) {
+            throw new MojoExecutionException("tupleLength should be greater than zero");
+        }
         if (packageName == null) {
             throw new MojoExecutionException("packageName parameter is not set");
         }
