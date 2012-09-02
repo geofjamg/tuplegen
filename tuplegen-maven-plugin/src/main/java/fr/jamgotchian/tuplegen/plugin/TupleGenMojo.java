@@ -62,31 +62,41 @@ public class TupleGenMojo extends AbstractMojo {
     private Float sourceVersion;
 
     /**
-     * Tuple defintion list.
+     * Generic tuples defintion.
      * @parameter
      */
-    private List<Tuple> tuples;
+    private List<GenericTuple> genericTuples;
 
     private final MavenTupleGenLogger logger = new MavenTupleGenLogger();
 
     public void execute() throws MojoExecutionException {
+        if (genericTuples == null || genericTuples.isEmpty()) {
+            return;
+        }
         if (packageName == null) {
-            throw new MojoExecutionException("packageName parameter is not set");
+            throw new MojoExecutionException("packageName is not set");
         }
 
         File generatedSources = new File(project.getBasedir(), "target/generated-sources/tuplegen");
         project.addCompileSourceRoot(generatedSources.getAbsolutePath());
 
+        logger.log("generating...");
+
         try {
             TupleGen generator = new TupleGen();
-            for (Tuple tuple : tuples) {
-                if (tuple.getLength() <= 0) {
+            for (GenericTuple genericTuple : genericTuples) {
+                if (genericTuple.getLength() == null) {
+                    throw new MojoExecutionException("tupleLength is not set");
+                }
+                if (genericTuple.getLength() <= 0) {
                     throw new MojoExecutionException("tupleLength should be greater than zero");
                 }
                 TupleGenParameters parameters = new TupleGenParameters();
                 parameters.setPackageName(packageName);
-                parameters.setTupleKind(tuple.getKind());
-                parameters.setTupleLength(tuple.getLength());
+                if (genericTuple.isLatinName() != null) {
+                    parameters.setLatinName(genericTuple.isLatinName());
+                }
+                parameters.setTupleLength(genericTuple.getLength());
                 if (sourceVersion != null) {
                     parameters.setSourceVersion(sourceVersion);
                 }

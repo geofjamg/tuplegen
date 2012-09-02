@@ -14,13 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.jamgotchian.tuplegen.core;
+package fr.jamgotchian.tuplegen.plugin;
 
 /**
  *
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at gmail.com>
  */
-public enum TupleKind {
-    BASIC,
-    NAMED
+public class GenericTuple {
+
+    private Integer length;
+
+    private Boolean latinName;
+
+    public GenericTuple() {
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public Boolean isLatinName() {
+        return latinName;
+    }
+
+    public void setLatinName(Boolean latinNames) {
+        this.latinName = latinNames;
+    }
+
 }

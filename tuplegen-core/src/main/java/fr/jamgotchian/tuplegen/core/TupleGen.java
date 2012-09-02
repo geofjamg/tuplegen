@@ -30,16 +30,8 @@ import org.apache.velocity.app.VelocityEngine;
  */
 public class TupleGen {
 
-    private static final TupleModel BASIC_TUPLE_MODEL = new BasicTupleModel();
-
-    private static final TupleModel NAMED_TUPLE_MODEL = new NamedTupleModel();
-
-    private static TupleModel getTupleModel(TupleKind kind) {
-        switch (kind) {
-            case BASIC: return BASIC_TUPLE_MODEL;
-            case NAMED: return NAMED_TUPLE_MODEL;
-            default: throw new AssertionError();
-        }
+    private static TupleModel getTupleModel(TupleGenParameters params) {
+        return new GenericTupleModel(params.isLatinName());
     }
 
     private final VelocityEngine ve;
@@ -57,16 +49,16 @@ public class TupleGen {
         context1.put("tupleLength", parameters.getTupleLength());
         context1.put("packageName", parameters.getPackageName());
         context1.put("sourceVersion", parameters.getSourceVersion());
-        context1.put("tupleModel", getTupleModel(parameters.getTupleKind()));
+        context1.put("tupleModel", getTupleModel(parameters));
         t.merge(context1, writer);
     }
 
     public void generate(TupleGenParameters parameters, File generatedSources, TupleGenLogger logger) throws IOException {
-        String tupleName = getTupleModel(parameters.getTupleKind()).getTupleName(parameters.getTupleLength());
+        TupleModel model = getTupleModel(parameters);
+        String tupleName = model.getTupleName(parameters.getTupleLength());
         String fileName = tupleName.substring(0, 1).toUpperCase() + tupleName.substring(1, tupleName.length()) + ".java";
         String packageRelDir = parameters.getPackageName().replace('.', '/');
         File packageDir = new File(generatedSources, packageRelDir);
-        logger.log("generating...");
         logger.log(packageRelDir + "/" + fileName);
         // ensure package directory exits
         packageDir.mkdirs();

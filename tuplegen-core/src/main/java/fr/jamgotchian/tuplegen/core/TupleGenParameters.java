@@ -24,7 +24,7 @@ public class TupleGenParameters {
 
     private int tupleLength;
 
-    private TupleKind tupleKind;
+    private boolean latinName = Boolean.TRUE;
 
     private String packageName;
 
@@ -41,12 +41,12 @@ public class TupleGenParameters {
         this.tupleLength = tupleLength;
     }
 
-    public TupleKind getTupleKind() {
-        return tupleKind;
+    public boolean isLatinName() {
+        return latinName;
     }
 
-    public void setTupleKind(TupleKind tupleKind) {
-        this.tupleKind = tupleKind;
+    public void setLatinName(boolean latinName) {
+        this.latinName = latinName;
     }
 
     public String getPackageName() {
