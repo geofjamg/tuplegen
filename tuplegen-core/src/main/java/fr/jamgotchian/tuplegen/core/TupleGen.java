@@ -70,9 +70,15 @@ public class TupleGen {
         String fileName = UTIL.upperCaseFirstChar(tupleName) + ".java";
         String packageRelDir = model.getPackageName().replace('.', '/');
         File packageDir = new File(genSrcDir, packageRelDir);
-        logger.log(packageRelDir + "/" + fileName);
+        if (logger != null) {
+            logger.log(packageRelDir + "/" + fileName);
+        }
         // ensure package directory exits
-        packageDir.mkdirs();
+        if (!packageDir.exists()) {
+            if (!packageDir.mkdirs()) {
+                throw new RuntimeException("Fail to create directory " + packageDir);
+            }
+        }
         File tupleFile = new File(packageDir, fileName);
         Writer writer = new FileWriter(tupleFile);
         try {
