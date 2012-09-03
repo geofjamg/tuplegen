@@ -20,13 +20,15 @@ package fr.jamgotchian.tuplegen.core;
  *
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at gmail.com>
  */
-public class GenericTupleModel implements TupleModel {
+public class GenericTupleModel extends AbstractTupleModel {
 
     private final int tupleLength;
 
     private final boolean latinName;
 
-    public GenericTupleModel(int tupleLength, boolean latinName) {
+    public GenericTupleModel(String templateDir, String packageName, float sourceVersion,
+                             String sourceEncoding, int tupleLength, boolean latinName) {
+        super(templateDir, packageName, sourceVersion, sourceEncoding);
         this.tupleLength = tupleLength;
         this.latinName = latinName;
     }

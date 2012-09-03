@@ -20,23 +20,41 @@ package fr.jamgotchian.tuplegen.core;
  *
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at gmail.com>
  */
-public interface TupleModel {
+public abstract class AbstractTupleModel implements TupleModel {
 
-    boolean isGeneric();
+    private final String templateDir;
 
-    String getTupleName(int length);
+    private final String packageName;
 
-    int getTupleLength();
+    private final float sourceVersion;
 
-    String getElementName(int number);
+    private final String sourceEncoding;
 
-    String getElementType(int number);
+    public AbstractTupleModel(String templateDir, String packageName, float sourceVersion, String sourceEncoding) {
+        this.templateDir = templateDir;
+        this.packageName = packageName;
+        this.sourceVersion = sourceVersion;
+        this.sourceEncoding = sourceEncoding;
+    }
 
-    String getTemplateDir();
+    @Override
+    public String getTemplateDir() {
+        return templateDir;
+    }
 
-    String getPackageName();
+    @Override
+    public String getPackageName() {
+        return packageName;
+    }
 
-    float getSourceVersion();
+    @Override
+    public float getSourceVersion() {
+        return sourceVersion;
+    }
 
-    String getSourceEncoding();
+    @Override
+    public String getSourceEncoding() {
+        return sourceEncoding;
+    }
+
 }

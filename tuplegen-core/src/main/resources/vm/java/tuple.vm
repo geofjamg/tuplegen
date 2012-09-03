@@ -1,6 +1,6 @@
-package $packageName;
+package $model.getPackageName();
 
-#if ($sourceVersion >= 1.7)
+#if ($model.getSourceVersion() >= 1.7)
 import java.util.Objects;
 #else
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 #else
 #set ($rangeExcludingFirst = [2..$model.getTupleLength()])
 #end
-public class $className#parse("${templateDir}types.vm") {
+public class $className#parse("${model.getTemplateDir()}types.vm") {
 
 ## Fields
 #foreach ($i in [1..$model.getTupleLength()])
@@ -24,7 +24,7 @@ public class $className#parse("${templateDir}types.vm") {
 
 #end
 ## Constructors
-    public $className(#parse("${templateDir}args.vm")) {
+    public $className(#parse("${model.getTemplateDir()}args.vm")) {
 #foreach ($i in [1..$model.getTupleLength()])
         this.$model.getElementName($i) = $model.getElementName($i);
 #end
@@ -42,14 +42,14 @@ public class $className#parse("${templateDir}types.vm") {
 #end
     @Override
     public int hashCode() {
-#if ($sourceVersion >= 1.7)
+#if ($model.getSourceVersion() >= 1.7)
         return Objects.hash($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
 #else
         return Arrays.hashCode(new Object[] {$model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end});
 #end
     }
 
-#if ($sourceVersion < 1.7)
+#if ($model.getSourceVersion() < 1.7)
     private static boolean equals(Object obj1, Object obj2) {
         if (obj1 == null && obj2 == null) {
             return true;
@@ -65,7 +65,7 @@ public class $className#parse("${templateDir}types.vm") {
     public boolean equals(Object obj) {
         if (obj instanceof $className) {
             $className other = ($className) obj;
-#if ($sourceVersion >= 1.7)
+#if ($model.getSourceVersion() >= 1.7)
             return Objects.equals(this.$model.getElementName(1), other.$model.getElementName(1))#foreach ($i in $rangeExcludingFirst) && Objects.equals(this.$model.getElementName($i), other.$model.getElementName($i))#end;
 #else
             return equals(this.$model.getElementName(1), other.$model.getElementName(1))#foreach ($i in $rangeExcludingFirst) && equals(this.$model.getElementName($i), other.$model.getElementName($i))#end;
@@ -86,8 +86,8 @@ public class $className#parse("${templateDir}types.vm") {
     }
 
 ## Static factory
-    public static #parse("${templateDir}types.vm") $className#parse("${templateDir}types.vm") make(#parse("${templateDir}args.vm")) {
-        return new $className#parse("${templateDir}types.vm")($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+    public static #parse("${model.getTemplateDir()}types.vm") $className#parse("${model.getTemplateDir()}types.vm") make(#parse("${model.getTemplateDir()}args.vm")) {
+        return new $className#parse("${model.getTemplateDir()}types.vm")($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
     }
 
 }

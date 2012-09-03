@@ -33,8 +33,13 @@ public class TupleGen {
     private static final TemplateUtil UTIL = new TemplateUtil();
 
     private static TupleModel getTupleModel(TupleGenParameters params) {
-        return new GenericTupleModel(params.getTupleLength(), params.isLatinName());
-//        return new UserTupleModel("result", new String[] {"logs", "returnCode"},
+        String templateDir = "vm/" + params.getSourceLanguage().toString().toLowerCase() + "/";
+        return new GenericTupleModel(templateDir, params.getPackageName(),
+                                     params.getSourceVersion(), params.getSourceEncoding(),
+                                     params.getTupleLength(), params.isLatinName());
+//        return new UserTupleModel(templateDir, params.getPackageName(),
+//                                  params.getSourceVersion(), params.getSourceEncoding(),
+//                                  "result", new String[] {"logs", "returnCode"},
 //                                  new String[] {"String", "Integer"});
     }
 
@@ -47,31 +52,32 @@ public class TupleGen {
         ve.init();
     }
 
-    public void generate(TupleGenParameters parameters, Writer writer) {
-        String templateDir = "vm/" + parameters.getSourceLanguage().toString().toLowerCase() + "/";
-        Template t = ve.getTemplate(templateDir + "tuple.vm", parameters.getSourceEncoding());
+    private void generate(TupleModel model, Writer writer) {
+        Template t = ve.getTemplate(model.getTemplateDir() + "tuple.vm", model.getSourceEncoding());
         VelocityContext context = new VelocityContext();
-        context.put("packageName", parameters.getPackageName());
-        context.put("sourceVersion", parameters.getSourceVersion());
-        context.put("templateDir", templateDir);
-        context.put("model", getTupleModel(parameters));
+        context.put("model", model);
         context.put("util", UTIL);
         t.merge(context, writer);
     }
 
-    public void generate(TupleGenParameters parameters, File generatedSources, TupleGenLogger logger) throws IOException {
-        TupleModel model = getTupleModel(parameters);
-        String tupleName = model.getTupleName(parameters.getTupleLength());
-        String fileName = tupleName.substring(0, 1).toUpperCase() + tupleName.substring(1, tupleName.length()) + ".java";
-        String packageRelDir = parameters.getPackageName().replace('.', '/');
-        File packageDir = new File(generatedSources, packageRelDir);
+    public void generate(TupleGenParameters params, Writer writer) throws IOException {
+        TupleModel model = getTupleModel(params);
+        generate(model, writer);
+    }
+
+    public void generate(TupleGenParameters params, File genSrcDir, TupleGenLogger logger) throws IOException {
+        TupleModel model = getTupleModel(params);
+        String tupleName = model.getTupleName(params.getTupleLength());
+        String fileName = UTIL.upperCaseFirstChar(tupleName) + ".java";
+        String packageRelDir = params.getPackageName().replace('.', '/');
+        File packageDir = new File(genSrcDir, packageRelDir);
         logger.log(packageRelDir + "/" + fileName);
         // ensure package directory exits
         packageDir.mkdirs();
         File tupleFile = new File(packageDir, fileName);
         Writer writer = new FileWriter(tupleFile);
         try {
-            generate(parameters, writer);
+            generate(model, writer);
         } finally {
             writer.close();
         }
