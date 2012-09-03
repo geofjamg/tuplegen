@@ -29,6 +29,11 @@ public class GenericTupleModel implements TupleModel {
     }
 
     @Override
+    public boolean isGeneric() {
+        return true;
+    }
+
+    @Override
     public String getTupleName(int length) {
         if (latinName) {
             switch (length) {
@@ -91,4 +96,10 @@ public class GenericTupleModel implements TupleModel {
             return "elt" + ordinal;
         }
     }
+
+    @Override
+    public String getElementType(int number) {
+        return "T" + number;
+    }
+
 }

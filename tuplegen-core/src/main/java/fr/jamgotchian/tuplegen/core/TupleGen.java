@@ -30,6 +30,8 @@ import org.apache.velocity.app.VelocityEngine;
  */
 public class TupleGen {
 
+    private static final TemplateUtil UTIL = new TemplateUtil();
+
     private static TupleModel getTupleModel(TupleGenParameters params) {
         return new GenericTupleModel(params.isLatinName());
     }
@@ -45,12 +47,13 @@ public class TupleGen {
 
     public void generate(TupleGenParameters parameters, Writer writer) {
         Template t = ve.getTemplate("vm/" + parameters.getSourceLanguage().toString().toLowerCase()
-                + "/generictuple.vm", parameters.getSourceEncoding());
+                + "/tuple.vm", parameters.getSourceEncoding());
         VelocityContext context1 = new VelocityContext();
         context1.put("tupleLength", parameters.getTupleLength());
         context1.put("packageName", parameters.getPackageName());
         context1.put("sourceVersion", parameters.getSourceVersion());
-        context1.put("tupleModel", getTupleModel(parameters));
+        context1.put("model", getTupleModel(parameters));
+        context1.put("util", UTIL);
         t.merge(context1, writer);
     }
 

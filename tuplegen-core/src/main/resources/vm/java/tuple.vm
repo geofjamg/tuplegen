@@ -1,0 +1,94 @@
+package $packageName;
+
+#if ($sourceVersion >= 1.7)
+import java.util.Objects;
+#else
+import java.util.Arrays;
+#end
+#set ($tupleName = $model.getTupleName($tupleLength))
+#set ($className = $util.upperCaseFirstChar($tupleName))
+
+/**
+ * An immutable ${tupleLength}-tuple
+ */
+#if ($tupleLength == 1)
+#set ($rangeExcludingFirst = [])
+#else
+#set ($rangeExcludingFirst = [2..$tupleLength])
+#end
+public class $className<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end> {
+#set ($tupleLengthMinusOne = $tupleLength - 1)
+
+## Fields
+#foreach ($i in [1..$tupleLength])
+    private final $model.getElementType($i) $model.getElementName($i);
+
+#end
+## Constructors
+    public $className($model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i) $model.getElementName($i)#end) {
+#foreach ($i in [1..$tupleLength])
+        this.$model.getElementName($i) = $model.getElementName($i);
+#end
+    }
+
+## Accessors
+#foreach ($i in [1..$tupleLength])
+#set ($fieldName = $model.getElementName($i))
+## Upper case the first letter
+#set ($methodName = "get$util.upperCaseFirstChar($fieldName)")
+    public $model.getElementType($i) $methodName() {
+        return $fieldName;
+    }
+
+#end
+    @Override
+    public int hashCode() {
+#if ($sourceVersion >= 1.7)
+        return Objects.hash($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+#else
+        return Arrays.hashCode(new Object[] {$model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end});
+#end
+    }
+
+#if ($sourceVersion < 1.7)
+    private static boolean equals(Object obj1, Object obj2) {
+        if (obj1 == null && obj2 == null) {
+            return true;
+        } else if (obj1 != null && obj2 != null) {
+            return obj1.equals(obj2);
+        } else {
+            return false;
+        }
+    }
+
+#end
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof $className) {
+            $className other = ($className) obj;
+#if ($sourceVersion >= 1.7)
+            return Objects.equals(this.$model.getElementName(1), other.$model.getElementName(1))#foreach ($i in $rangeExcludingFirst) && Objects.equals(this.$model.getElementName($i), other.$model.getElementName($i))#end;
+#else
+            return equals(this.$model.getElementName(1), other.$model.getElementName(1))#foreach ($i in $rangeExcludingFirst) && equals(this.$model.getElementName($i), other.$model.getElementName($i))#end;
+#end
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("(")
+            .append($model.getElementName(1))
+#foreach ($i in $rangeExcludingFirst)
+            .append(", ").append($model.getElementName($i))
+#end
+            .append(")").toString();
+    }
+
+## Static factory
+    public static <$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end> $className<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end> make($model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i) $model.getElementName($i)#end) {
+        return new $className<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end>($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+    }
+
+}

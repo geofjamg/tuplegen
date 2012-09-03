@@ -20,13 +20,15 @@ package fr.jamgotchian.tuplegen.core;
  *
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at gmail.com>
  */
-public interface TupleModel {
+public class TemplateUtil {
 
-    boolean isGeneric();
+    public TemplateUtil() {
+    }
 
-    String getTupleName(int length);
-
-    String getElementName(int number);
-
-    String getElementType(int number);
+    public String upperCaseFirstChar(String str) {
+        if (str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1, str.length());
+    }
 }
