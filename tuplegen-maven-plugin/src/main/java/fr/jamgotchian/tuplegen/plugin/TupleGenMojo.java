@@ -73,10 +73,27 @@ public class TupleGenMojo extends AbstractMojo {
      */
     private List<GenericTuple> genericTuples;
 
+    /**
+     * User defined tuples defintion.
+     * @parameter
+     */
+    private List<UserDefinedTuple> userDefinedTuples;
+
     private final MavenTupleGenLogger logger = new MavenTupleGenLogger();
 
+    private int getTupleCount() {
+        int count = 0;
+        if (genericTuples != null) {
+            count += genericTuples.size();
+        }
+        if (userDefinedTuples != null) {
+            count += userDefinedTuples.size();
+        }
+        return count;
+    }
+
     public void execute() throws MojoExecutionException {
-        if (genericTuples == null || genericTuples.isEmpty()) {
+        if (getTupleCount() == 0) {
             return;
         }
         if (packageName == null) {
@@ -90,26 +107,49 @@ public class TupleGenMojo extends AbstractMojo {
 
         try {
             TupleGen generator = new TupleGen();
-            for (GenericTuple genericTuple : genericTuples) {
-                if (genericTuple.getLength() == null) {
-                    throw new MojoExecutionException("tupleLength is not set");
+
+            if (genericTuples != null) {
+                for (GenericTuple tuple : genericTuples) {
+                    if (tuple.getLength() == null) {
+                        throw new MojoExecutionException("Generic tuple length is not set");
+                    }
+                    if (tuple.getLength() <= 0) {
+                        throw new MojoExecutionException("Generic tuple length should be greater than zero");
+                    }
+                    TupleGenParameters parameters = new TupleGenParameters();
+                    parameters.setPackageName(packageName);
+                    if (tuple.isLatinName() != null) {
+                        parameters.setLatinName(tuple.isLatinName());
+                    }
+                    parameters.setTupleLength(tuple.getLength());
+                    if (sourceVersion != null) {
+                        parameters.setSourceVersion(sourceVersion);
+                    }
+                    if (sourceEncoding != null) {
+                        parameters.setSourceEncoding(sourceEncoding);
+                    }
+                    generator.generate(parameters, generatedSources, logger);
                 }
-                if (genericTuple.getLength() <= 0) {
-                    throw new MojoExecutionException("tupleLength should be greater than zero");
+            }
+
+            if (userDefinedTuples != null) {
+                for (UserDefinedTuple tuple : userDefinedTuples) {
+                    if (tuple.getName() == null) {
+                        throw new MojoExecutionException("User defined tuple name is not set");
+                    }
+                    if (tuple.getElements() == null || tuple.getElements().isEmpty()) {
+                        throw new MojoExecutionException("Empty user defined tuple");
+                    }
+                    for (Element elt : tuple.getElements()) {
+                        if (elt.getName() == null) {
+                            throw new MojoExecutionException("Element name is not set");
+                        }
+                        if (elt.getType() == null) {
+                            throw new MojoExecutionException("Element type is not set");
+                        }
+                        // TODO
+                    }
                 }
-                TupleGenParameters parameters = new TupleGenParameters();
-                parameters.setPackageName(packageName);
-                if (genericTuple.isLatinName() != null) {
-                    parameters.setLatinName(genericTuple.isLatinName());
-                }
-                parameters.setTupleLength(genericTuple.getLength());
-                if (sourceVersion != null) {
-                    parameters.setSourceVersion(sourceVersion);
-                }
-                if (sourceEncoding != null) {
-                    parameters.setSourceEncoding(sourceEncoding);
-                }
-                generator.generate(parameters, generatedSources, logger);
             }
         } catch (IOException e) {
             throw new MojoExecutionException(e.toString(), e);
