@@ -65,11 +65,10 @@ public class TupleGen {
         generate(model, writer);
     }
 
-    public void generate(TupleGenParameters params, File genSrcDir, TupleGenLogger logger) throws IOException {
-        TupleModel model = getTupleModel(params);
-        String tupleName = model.getTupleName(params.getTupleLength());
+    private void generate(TupleModel model, File genSrcDir, TupleGenLogger logger) throws IOException {
+        String tupleName = model.getTupleName();
         String fileName = UTIL.upperCaseFirstChar(tupleName) + ".java";
-        String packageRelDir = params.getPackageName().replace('.', '/');
+        String packageRelDir = model.getPackageName().replace('.', '/');
         File packageDir = new File(genSrcDir, packageRelDir);
         logger.log(packageRelDir + "/" + fileName);
         // ensure package directory exits
@@ -81,5 +80,10 @@ public class TupleGen {
         } finally {
             writer.close();
         }
+    }
+
+    public void generate(TupleGenParameters params, File genSrcDir, TupleGenLogger logger) throws IOException {
+        TupleModel model = getTupleModel(params);
+        generate(model, genSrcDir, logger);
     }
 }

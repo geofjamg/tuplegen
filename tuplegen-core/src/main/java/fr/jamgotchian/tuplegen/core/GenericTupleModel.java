@@ -43,9 +43,9 @@ public class GenericTupleModel extends AbstractTupleModel {
     }
 
     @Override
-    public String getTupleName(int length) {
+    public String getTupleName() {
         if (latinName) {
-            switch (length) {
+            switch (tupleLength) {
                 case 1: return "single";
                 case 2: return "pair";
                 case 3: return "triple";
@@ -67,10 +67,10 @@ public class GenericTupleModel extends AbstractTupleModel {
                 case 19: return "novemdecuple";
                 case 20: return "vigenuple";
                 default: throw new RuntimeException("Don't know how to name a "
-                        + length + "-tuple");
+                        + tupleLength + "-tuple");
             }
         } else {
-            return "tuple" + length;
+            return "tuple" + tupleLength;
         }
     }
 

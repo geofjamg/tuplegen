@@ -24,7 +24,7 @@ public interface TupleModel {
 
     boolean isGeneric();
 
-    String getTupleName(int length);
+    String getTupleName();
 
     int getTupleLength();
 

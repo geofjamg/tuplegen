@@ -45,7 +45,7 @@ public class UserDefinedTupleModel extends AbstractTupleModel {
         return elementsName.length;
     }
 
-    public String getTupleName(int length) {
+    public String getTupleName() {
         return tupleName;
     }
 
