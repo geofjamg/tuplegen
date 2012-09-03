@@ -37,10 +37,10 @@ public class TupleGen {
         return new GenericTupleModel(templateDir, params.getPackageName(),
                                      params.getSourceVersion(), params.getSourceEncoding(),
                                      params.getTupleLength(), params.isLatinName());
-//        return new UserTupleModel(templateDir, params.getPackageName(),
-//                                  params.getSourceVersion(), params.getSourceEncoding(),
-//                                  "result", new String[] {"logs", "returnCode"},
-//                                  new String[] {"String", "Integer"});
+//        return new UserDefinedTupleModel(templateDir, params.getPackageName(),
+//                                         params.getSourceVersion(), params.getSourceEncoding(),
+//                                         "result", new String[] {"logs", "returnCode"},
+//                                         new String[] {"String", "Integer"});
     }
 
     private final VelocityEngine ve;

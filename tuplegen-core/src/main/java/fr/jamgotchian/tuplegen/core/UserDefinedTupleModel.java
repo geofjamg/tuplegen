@@ -20,7 +20,7 @@ package fr.jamgotchian.tuplegen.core;
  *
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at gmail.com>
  */
-public class UserTupleModel extends AbstractTupleModel {
+public class UserDefinedTupleModel extends AbstractTupleModel {
 
     private final String tupleName;
 
@@ -28,7 +28,7 @@ public class UserTupleModel extends AbstractTupleModel {
 
     private final String[] elementsType;
 
-    public UserTupleModel(String templateDir, String packageName, float sourceVersion,
+    public UserDefinedTupleModel(String templateDir, String packageName, float sourceVersion,
                           String sourceEncoding, String tupleName, String[] elementsName,
                           String[] elementsType) {
         super(templateDir, packageName, sourceVersion, sourceEncoding);
