@@ -1,0 +1,1 @@
+$model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i) $model.getElementName($i)#end

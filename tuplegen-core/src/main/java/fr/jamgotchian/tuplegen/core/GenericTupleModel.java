@@ -22,15 +22,22 @@ package fr.jamgotchian.tuplegen.core;
  */
 public class GenericTupleModel implements TupleModel {
 
+    private final int tupleLength;
+
     private final boolean latinName;
 
-    public GenericTupleModel(boolean latinName) {
+    public GenericTupleModel(int tupleLength, boolean latinName) {
+        this.tupleLength = tupleLength;
         this.latinName = latinName;
     }
 
     @Override
     public boolean isGeneric() {
         return true;
+    }
+
+    public int getTupleLength() {
+        return tupleLength;
     }
 
     @Override

@@ -5,34 +5,33 @@ import java.util.Objects;
 #else
 import java.util.Arrays;
 #end
-#set ($tupleName = $model.getTupleName($tupleLength))
+#set ($tupleName = $model.getTupleName($model.getTupleLength()))
 #set ($className = $util.upperCaseFirstChar($tupleName))
 
 /**
- * An immutable ${tupleLength}-tuple
+ * An immutable #if ($model.isGeneric())generic#{else}user defined#end ${model.getTupleLength()}-tuple
  */
-#if ($tupleLength == 1)
+#if ($model.getTupleLength() == 1)
 #set ($rangeExcludingFirst = [])
 #else
-#set ($rangeExcludingFirst = [2..$tupleLength])
+#set ($rangeExcludingFirst = [2..$model.getTupleLength()])
 #end
-public class $className<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end> {
-#set ($tupleLengthMinusOne = $tupleLength - 1)
+public class $className#parse("${templateDir}types.vm") {
 
 ## Fields
-#foreach ($i in [1..$tupleLength])
+#foreach ($i in [1..$model.getTupleLength()])
     private final $model.getElementType($i) $model.getElementName($i);
 
 #end
 ## Constructors
-    public $className($model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i) $model.getElementName($i)#end) {
-#foreach ($i in [1..$tupleLength])
+    public $className(#parse("${templateDir}args.vm")) {
+#foreach ($i in [1..$model.getTupleLength()])
         this.$model.getElementName($i) = $model.getElementName($i);
 #end
     }
 
 ## Accessors
-#foreach ($i in [1..$tupleLength])
+#foreach ($i in [1..$model.getTupleLength()])
 #set ($fieldName = $model.getElementName($i))
 ## Upper case the first letter
 #set ($methodName = "get$util.upperCaseFirstChar($fieldName)")
@@ -87,8 +86,8 @@ public class $className<$model.getElementType(1)#foreach ($i in $rangeExcludingF
     }
 
 ## Static factory
-    public static <$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end> $className<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end> make($model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i) $model.getElementName($i)#end) {
-        return new $className<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end>($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+    public static #parse("${templateDir}types.vm") $className#parse("${templateDir}types.vm") make(#parse("${templateDir}args.vm")) {
+        return new $className#parse("${templateDir}types.vm")($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
     }
 
 }

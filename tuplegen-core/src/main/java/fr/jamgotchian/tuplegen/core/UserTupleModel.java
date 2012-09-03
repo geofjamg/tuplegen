@@ -20,15 +20,38 @@ package fr.jamgotchian.tuplegen.core;
  *
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at gmail.com>
  */
-public interface TupleModel {
+public class UserTupleModel implements TupleModel {
 
-    boolean isGeneric();
+    private final String tupleName;
 
-    String getTupleName(int length);
+    private final String[] elementsName;
 
-    int getTupleLength();
+    private final String[] elementsType;
 
-    String getElementName(int number);
+    public UserTupleModel(String tupleName, String[] elementsName, String[] elementsType) {
+        this.tupleName = tupleName;
+        this.elementsName = elementsName;
+        this.elementsType = elementsType;
+    }
 
-    String getElementType(int number);
+    public boolean isGeneric() {
+        return false;
+    }
+
+    public int getTupleLength() {
+        return elementsName.length;
+    }
+
+    public String getTupleName(int length) {
+        return tupleName;
+    }
+
+    public String getElementName(int number) {
+        return elementsName[number-1];
+    }
+
+    public String getElementType(int number) {
+        return elementsType[number-1];
+    }
+
 }

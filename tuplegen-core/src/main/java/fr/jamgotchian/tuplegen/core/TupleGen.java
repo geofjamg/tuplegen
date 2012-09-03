@@ -33,7 +33,9 @@ public class TupleGen {
     private static final TemplateUtil UTIL = new TemplateUtil();
 
     private static TupleModel getTupleModel(TupleGenParameters params) {
-        return new GenericTupleModel(params.isLatinName());
+        return new GenericTupleModel(params.getTupleLength(), params.isLatinName());
+//        return new UserTupleModel("result", new String[] {"logs", "returnCode"},
+//                                  new String[] {"String", "Integer"});
     }
 
     private final VelocityEngine ve;
@@ -46,15 +48,15 @@ public class TupleGen {
     }
 
     public void generate(TupleGenParameters parameters, Writer writer) {
-        Template t = ve.getTemplate("vm/" + parameters.getSourceLanguage().toString().toLowerCase()
-                + "/tuple.vm", parameters.getSourceEncoding());
-        VelocityContext context1 = new VelocityContext();
-        context1.put("tupleLength", parameters.getTupleLength());
-        context1.put("packageName", parameters.getPackageName());
-        context1.put("sourceVersion", parameters.getSourceVersion());
-        context1.put("model", getTupleModel(parameters));
-        context1.put("util", UTIL);
-        t.merge(context1, writer);
+        String templateDir = "vm/" + parameters.getSourceLanguage().toString().toLowerCase() + "/";
+        Template t = ve.getTemplate(templateDir + "tuple.vm", parameters.getSourceEncoding());
+        VelocityContext context = new VelocityContext();
+        context.put("packageName", parameters.getPackageName());
+        context.put("sourceVersion", parameters.getSourceVersion());
+        context.put("templateDir", templateDir);
+        context.put("model", getTupleModel(parameters));
+        context.put("util", UTIL);
+        t.merge(context, writer);
     }
 
     public void generate(TupleGenParameters parameters, File generatedSources, TupleGenLogger logger) throws IOException {
