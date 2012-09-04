@@ -1,5 +1,6 @@
 package $model.getPackageName();
 
+import java.io.Serializable;
 #if ($model.getSourceVersion() >= 1.7)
 import java.util.Objects;
 #else
@@ -24,7 +25,7 @@ $model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcluding
 $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end
 #end
 #set ($className = $util.upperCaseFirstChar($model.getTupleName()))
-public class $className#types {
+public class $className#types implements Serializable {
 
 ## Fields
 #foreach ($i in [1..$model.getTupleLength()])
