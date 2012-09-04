@@ -37,9 +37,14 @@ public class TupleGenMojo extends AbstractMojo {
 
     private class MavenTupleGenLogger implements TupleGenLogger {
 
-        public void log(String msg) {
+        public void info(String msg) {
             getLog().info(msg);
         }
+
+        public void warning(String msg) {
+            getLog().warn(msg);
+        }
+
     }
 
     /**
@@ -103,7 +108,7 @@ public class TupleGenMojo extends AbstractMojo {
         File generatedSources = new File(project.getBasedir(), "target/generated-sources/tuplegen");
         project.addCompileSourceRoot(generatedSources.getAbsolutePath());
 
-        logger.log("generating...");
+        logger.info("generating...");
 
         try {
             TupleGen generator = new TupleGen();

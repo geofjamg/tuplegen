@@ -32,11 +32,12 @@ public class TupleGen {
 
     private static final TemplateUtil UTIL = new TemplateUtil();
 
-    private static TupleModel getTupleModel(TupleGenParameters params) {
+    private static TupleModel getTupleModel(TupleGenParameters params, TupleGenLogger logger) {
         String templateDir = "vm/" + params.getSourceLanguage().toString().toLowerCase() + "/";
         return new GenericTupleModel(templateDir, params.getPackageName(),
                                      params.getSourceVersion(), params.getSourceEncoding(),
-                                     params.getTupleLength(), params.isLatinName());
+                                     params.getTupleLength(), params.isLatinName(),
+                                     logger);
 //        return new UserDefinedTupleModel(templateDir, params.getPackageName(),
 //                                         params.getSourceVersion(), params.getSourceEncoding(),
 //                                         "result", new String[] {"logs", "returnCode"},
@@ -61,7 +62,7 @@ public class TupleGen {
     }
 
     public void generate(TupleGenParameters params, Writer writer) throws IOException {
-        TupleModel model = getTupleModel(params);
+        TupleModel model = getTupleModel(params, null);
         generate(model, writer);
     }
 
@@ -71,7 +72,7 @@ public class TupleGen {
         String packageRelDir = model.getPackageName().replace('.', '/');
         File packageDir = new File(genSrcDir, packageRelDir);
         if (logger != null) {
-            logger.log(packageRelDir + "/" + fileName);
+            logger.info(packageRelDir + "/" + fileName);
         }
         // ensure package directory exits
         if (!packageDir.exists()) {
@@ -89,7 +90,7 @@ public class TupleGen {
     }
 
     public void generate(TupleGenParameters params, File genSrcDir, TupleGenLogger logger) throws IOException {
-        TupleModel model = getTupleModel(params);
+        TupleModel model = getTupleModel(params, logger);
         generate(model, genSrcDir, logger);
     }
 }

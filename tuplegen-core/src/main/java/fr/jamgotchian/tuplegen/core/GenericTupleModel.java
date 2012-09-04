@@ -22,15 +22,71 @@ package fr.jamgotchian.tuplegen.core;
  */
 public class GenericTupleModel extends AbstractTupleModel {
 
+    private static final String[] TUPLE_LATIN_NAMES = {
+        "single",
+        "pair",
+        "triple",
+        "quadruple",
+        "quintuple",
+        "sextuple",
+        "septuple",
+        "octuple",
+        "nonuple",
+        "decuple",
+        "undecuple",
+        "duodecuple",
+        "tredecuple",
+        "quattuordecuple",
+        "quindecuple",
+        "sexdecuple",
+        "septendecuple",
+        "octodecuple",
+        "novemdecuple",
+        "vigenuple"};
+
+    private static final String[] ELEMENT_LATIN_NAMES = {
+        "first",
+        "second",
+        "third",
+        "fourth",
+        "fifth",
+        "sixth",
+        "seventh",
+        "eighth",
+        "ninth",
+        "tenth",
+        "eleventh",
+        "twelfth",
+        "thirteenth",
+        "fourteenth",
+        "fifteenth",
+        "sixteenth",
+        "seventeenth",
+        "eighteenth",
+        "nineteenth",
+        "twentieth"};
+
     private final int tupleLength;
 
     private final boolean latinName;
 
+    private final TupleGenLogger logger;
+
     public GenericTupleModel(String templateDir, String packageName, float sourceVersion,
-                             String sourceEncoding, int tupleLength, boolean latinName) {
+                             String sourceEncoding, int tupleLength, boolean latinName,
+                             TupleGenLogger logger) {
         super(templateDir, packageName, sourceVersion, sourceEncoding);
+        if (tupleLength < 1) {
+            throw new IllegalArgumentException("Tuple length must be < 1");
+        }
+        if (logger != null) {
+            if (tupleLength > TUPLE_LATIN_NAMES.length) {
+                logger.warning("Don't know what is the latin name of a " + tupleLength + "-tuple");
+            }
+        }
         this.tupleLength = tupleLength;
         this.latinName = latinName;
+        this.logger = logger;
     }
 
     @Override
@@ -44,66 +100,18 @@ public class GenericTupleModel extends AbstractTupleModel {
 
     @Override
     public String getTupleName() {
-        if (latinName) {
-            switch (tupleLength) {
-                case 1: return "single";
-                case 2: return "pair";
-                case 3: return "triple";
-                case 4: return "quadruple";
-                case 5: return "quintuple";
-                case 6: return "sextuple";
-                case 7: return "septuple";
-                case 8: return "octuple";
-                case 9: return "nonuple";
-                case 10: return "decuple";
-                case 11: return "undecuple";
-                case 12: return "duodecuple";
-                case 13: return "tredecuple";
-                case 14: return "quattuordecuple";
-                case 15: return "quindecuple";
-                case 16: return "sexdecuple";
-                case 17: return "septendecuple";
-                case 18: return "octodecuple";
-                case 19: return "novemdecuple";
-                case 20: return "vigenuple";
-                default: throw new RuntimeException("Don't know how to name a "
-                        + tupleLength + "-tuple");
-            }
-        } else {
-            return "tuple" + tupleLength;
+        if (latinName && tupleLength <= TUPLE_LATIN_NAMES.length) {
+            return TUPLE_LATIN_NAMES[tupleLength-1];
         }
+        return "tuple" + tupleLength;
     }
 
     @Override
     public String getElementName(int ordinal) {
-        if (latinName) {
-            switch (ordinal) {
-                case 1: return "first";
-                case 2: return "second";
-                case 3: return "third";
-                case 4: return "fourth";
-                case 5: return "fifth";
-                case 6: return "sixth";
-                case 7: return "seventh";
-                case 8: return "eighth";
-                case 9: return "ninth";
-                case 10: return "tenth";
-                case 11: return "eleventh";
-                case 12: return "twelfth";
-                case 13: return "thirteenth";
-                case 14: return "fourteenth";
-                case 15: return "fifteenth";
-                case 16: return "sixteenth";
-                case 17: return "seventeenth";
-                case 18: return "eighteenth";
-                case 19: return "nineteenth";
-                case 20: return "twentieth";
-                default: throw new RuntimeException("Don't know how to name the ordinal number"
-                        + ordinal);
-            }
-        } else {
-            return "elt" + ordinal;
+        if (latinName && ordinal <= ELEMENT_LATIN_NAMES.length) {
+            return ELEMENT_LATIN_NAMES[ordinal-1];
         }
+        return "elt" + ordinal;
     }
 
     @Override

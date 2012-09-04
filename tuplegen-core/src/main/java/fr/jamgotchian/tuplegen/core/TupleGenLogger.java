@@ -22,5 +22,7 @@ package fr.jamgotchian.tuplegen.core;
  */
 public interface TupleGenLogger {
 
-    void log(String msg);
+    void info(String msg);
+
+    void warning(String msg);
 }
