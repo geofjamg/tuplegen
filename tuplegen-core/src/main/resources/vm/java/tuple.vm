@@ -14,8 +14,14 @@ import java.util.Arrays;
 #else
 #set ($rangeExcludingFirst = [2..$model.getTupleLength()])
 #end
+#macro(args)
+$model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i) $model.getElementName($i)#end
+#end
+#macro(types)
+#if ($model.isGeneric())<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end>#end
+#end
 #set ($className = $util.upperCaseFirstChar($model.getTupleName()))
-public class $className#parse("${model.getTemplateDir()}types.vm") {
+public class $className#types {
 
 ## Fields
 #foreach ($i in [1..$model.getTupleLength()])
@@ -23,7 +29,7 @@ public class $className#parse("${model.getTemplateDir()}types.vm") {
 
 #end
 ## Constructors
-    public $className(#parse("${model.getTemplateDir()}args.vm")) {
+    public $className(#args) {
 #foreach ($i in [1..$model.getTupleLength()])
         this.$model.getElementName($i) = $model.getElementName($i);
 #end
@@ -85,8 +91,8 @@ public class $className#parse("${model.getTemplateDir()}types.vm") {
     }
 
 ## Static factory
-    public static #parse("${model.getTemplateDir()}types.vm") $className#parse("${model.getTemplateDir()}types.vm") make(#parse("${model.getTemplateDir()}args.vm")) {
-        return new $className#parse("${model.getTemplateDir()}types.vm")($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+    public static #types $className#types make(#args) {
+        return new $className#types()($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
     }
 
 }
