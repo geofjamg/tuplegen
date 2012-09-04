@@ -92,7 +92,7 @@ public class $className#types {
 
 ## Static factory
     public static #types $className#types make(#args) {
-        return new $className#types()($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else<>#end($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
     }
 
 }
