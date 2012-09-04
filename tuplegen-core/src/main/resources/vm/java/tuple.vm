@@ -7,6 +7,7 @@ import java.util.Objects;
 #else
 import java.util.Arrays;
 #end
+import javax.annotation.Generated;
 
 /**
  * An immutable #if ($model.isGeneric())generic#{else}user defined#end ${model.getTupleLength()}-tuple
@@ -26,6 +27,7 @@ $model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcluding
 $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end
 #end
 #set ($className = $util.upperCaseFirstChar($model.getTupleName()))
+@Generated("tuplegen")
 public class $className#types implements Serializable, Iterable<Object> {
 
 #set ($iteratorClassName = "${className}Iterator")
