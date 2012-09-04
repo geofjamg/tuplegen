@@ -1,6 +1,7 @@
 package $model.getPackageName();
 
 import java.io.Serializable;
+import java.util.Iterator;
 #if ($model.getSourceVersion() >= 1.7)
 import java.util.Objects;
 #else
@@ -25,7 +26,34 @@ $model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcluding
 $model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end
 #end
 #set ($className = $util.upperCaseFirstChar($model.getTupleName()))
-public class $className#types implements Serializable {
+public class $className#types implements Serializable, Iterable<Object> {
+
+#set ($iteratorClassName = "${className}Iterator")
+    private class $iteratorClassName implements Iterator<Object> {
+
+        private int ordinal = 1;
+
+        @Override
+        public boolean hasNext() {
+            return ordinal <= $model.getTupleLength();
+        }
+
+        @Override
+        public Object next() {
+            switch (ordinal++) {
+#foreach ($i in [1..$model.getTupleLength()])
+                case $i: return $model.getElementName($i);
+#end
+                default: throw new InternalError();
+            }
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove a tuple element");
+        }
+
+    }
 
 ## Fields
 #foreach ($i in [1..$model.getTupleLength()])
@@ -95,6 +123,11 @@ public class $className#types implements Serializable {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public Iterator<Object> iterator() {
+        return new $iteratorClassName();
     }
 
     @Override
