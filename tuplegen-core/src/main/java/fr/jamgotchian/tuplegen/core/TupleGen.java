@@ -87,6 +87,9 @@ public class TupleGen {
         } finally {
             writer.close();
         }
+        if (!tupleFile.setReadOnly()) {
+            throw new RuntimeException("Cannot set file " + tupleFile + " read only");
+        }
     }
 
     public void generate(TupleGenParameters params, File genSrcDir, TupleGenLogger logger) throws IOException {
