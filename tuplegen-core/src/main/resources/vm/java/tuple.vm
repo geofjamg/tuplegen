@@ -39,13 +39,26 @@ public class $className#types implements Serializable {
 #end
     }
 
-## Accessors
+## Getters
 #foreach ($i in [1..$model.getTupleLength()])
 #set ($fieldName = $model.getElementName($i))
-## Upper case the first letter
+#set ($fieldType = $model.getElementType($i))
 #set ($methodName = "get$util.upperCaseFirstChar($fieldName)")
-    public $model.getElementType($i) $methodName() {
+    public $fieldType $methodName() {
         return $fieldName;
+    }
+
+#end
+## Setters
+#foreach ($i in [1..$model.getTupleLength()])
+#set ($fieldName = $model.getElementName($i))
+#set ($fieldType = $model.getElementType($i))
+#set ($methodName = "set$util.upperCaseFirstChar($fieldName)")
+#macro(attrs_scope $j)
+#if($j != 1)this.#end$model.getElementName(1)#foreach ($k in $rangeExcludingFirst), #if($j != $k)this.#end$model.getElementName($k)#end
+#end
+    public $className#types $methodName($fieldType $fieldName) {
+        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else<>#end(#attrs_scope($i));
     }
 
 #end
