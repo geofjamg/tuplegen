@@ -67,6 +67,11 @@ public class $className#types implements Serializable, Iterable<Object> {
      */
     private int hash;
 
+    /**
+     * Cache the string representation
+     */
+    private String str;
+
 ## Constructors
     public $className(#args) {
 #foreach ($i in [1..$model.getTupleLength()])
@@ -142,12 +147,15 @@ public class $className#types implements Serializable, Iterable<Object> {
 
     @Override
     public String toString() {
-        return new StringBuilder("(")
-            .append($model.getElementName(1))
+        if (str == null) {
+            str = new StringBuilder("(")
+                .append($model.getElementName(1))
 #foreach ($i in $rangeExcludingFirst)
-            .append(", ").append($model.getElementName($i))
+                .append(", ").append($model.getElementName($i))
 #end
-            .append(")").toString();
+                .append(")").toString();
+        }
+        return str;
     }
 
 ## Static factory
