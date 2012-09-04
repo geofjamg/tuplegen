@@ -20,6 +20,9 @@ $model.getElementType(1) $model.getElementName(1)#foreach ($i in $rangeExcluding
 #macro(types)
 #if ($model.isGeneric())<$model.getElementType(1)#foreach ($i in $rangeExcludingFirst), $model.getElementType($i)#end>#end
 #end
+#macro(attrs)
+$model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end
+#end
 #set ($className = $util.upperCaseFirstChar($model.getTupleName()))
 public class $className#types {
 
@@ -48,9 +51,9 @@ public class $className#types {
     @Override
     public int hashCode() {
 #if ($model.getSourceVersion() >= 1.7)
-        return Objects.hash($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+        return Objects.hash(#attrs);
 #else
-        return Arrays.hashCode(new Object[] {$model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end});
+        return Arrays.hashCode(new Object[] {#attrs});
 #end
     }
 
@@ -92,7 +95,7 @@ public class $className#types {
 
 ## Static factory
     public static #types $className#types make(#args) {
-        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else<>#end($model.getElementName(1)#foreach ($i in $rangeExcludingFirst), $model.getElementName($i)#end);
+        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else<>#end(#attrs);
     }
 
 }
