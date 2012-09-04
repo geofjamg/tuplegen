@@ -94,7 +94,7 @@ public class $className#types {
     }
 
 ## Static factory
-    public static #types $className#types make(#args) {
+    public static #types $className#types create(#args) {
         return new $className#if ($model.getSourceVersion() < 1.7)#types()#else<>#end(#attrs);
     }
 
