@@ -18,13 +18,17 @@ package fr.jamgotchian.tuplegen.plugin;
 
 import fr.jamgotchian.tuplegen.core.TupleGen;
 import fr.jamgotchian.tuplegen.core.TupleGenLogger;
-import fr.jamgotchian.tuplegen.core.TupleGenParameters;
+import fr.jamgotchian.tuplegen.core.config.GenericTuple;
+import fr.jamgotchian.tuplegen.core.config.ObjectFactory;
+import fr.jamgotchian.tuplegen.core.config.SourceLanguage;
+import fr.jamgotchian.tuplegen.core.config.TupleConfig;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import javax.xml.bind.JAXBException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.xml.sax.SAXException;
 
 /**
  * Generate tuples.
@@ -73,90 +77,64 @@ public class TupleGenMojo extends AbstractMojo {
     private String sourceEncoding;
 
     /**
-     * Generic tuples defintion.
+     * Generic tuples length.
      * @parameter
      */
-    private List<GenericTuple> genericTuples;
+    private String lengths;
 
     /**
-     * User defined tuples defintion.
+     * Tuples config file.
      * @parameter
      */
-    private List<UserDefinedTuple> userDefinedTuples;
+    private File configFile;
 
     private final MavenTupleGenLogger logger = new MavenTupleGenLogger();
 
-    private int getTupleCount() {
-        int count = 0;
-        if (genericTuples != null) {
-            count += genericTuples.size();
-        }
-        if (userDefinedTuples != null) {
-            count += userDefinedTuples.size();
-        }
-        return count;
-    }
-
     public void execute() throws MojoExecutionException {
-        if (getTupleCount() == 0) {
-            return;
-        }
-        if (packageName == null) {
-            throw new MojoExecutionException("packageName is not set");
-        }
 
-        File generatedSources = new File(project.getBasedir(), "target/generated-sources/tuplegen");
-        project.addCompileSourceRoot(generatedSources.getAbsolutePath());
+        File genSrcDir = new File(project.getBasedir(), "target/generated-sources/tuplegen");
+        project.addCompileSourceRoot(genSrcDir.getAbsolutePath());
 
         logger.info("generating...");
 
         try {
             TupleGen generator = new TupleGen();
 
-            if (genericTuples != null) {
-                for (GenericTuple tuple : genericTuples) {
-                    if (tuple.getLength() == null) {
-                        throw new MojoExecutionException("Generic tuple length is not set");
-                    }
-                    if (tuple.getLength() <= 0) {
+            if (lengths != null && lengths.length() > 0) {
+                if (packageName == null) {
+                    throw new MojoExecutionException("packageName is not set");
+                }
+                ObjectFactory factory = new ObjectFactory();
+                TupleConfig config = factory.createTupleConfig();
+                config.setPackageName(packageName);
+                config.setSourceLanguage(SourceLanguage.JAVA);
+
+                if (sourceVersion != null) {
+                    config.setSourceVersion(sourceVersion);
+                }
+                if (sourceEncoding != null) {
+                    config.setSourceEncoding(sourceEncoding);
+                }
+                for (String token : lengths.split(",")) {
+                    int length = Integer.valueOf(token);
+                    if (length <= 0) {
                         throw new MojoExecutionException("Generic tuple length should be greater than zero");
                     }
-                    TupleGenParameters parameters = new TupleGenParameters();
-                    parameters.setPackageName(packageName);
-                    if (tuple.isLatinName() != null) {
-                        parameters.setLatinName(tuple.isLatinName());
-                    }
-                    parameters.setTupleLength(tuple.getLength());
-                    if (sourceVersion != null) {
-                        parameters.setSourceVersion(sourceVersion);
-                    }
-                    if (sourceEncoding != null) {
-                        parameters.setSourceEncoding(sourceEncoding);
-                    }
-                    generator.generate(parameters, generatedSources, logger);
+                    GenericTuple tuple = factory.createGenericTuple();
+                    tuple.setLength(length);
+                    config.getGenericTuples().add(tuple);
                 }
+                generator.generate(config, genSrcDir, logger, true);
             }
 
-            if (userDefinedTuples != null) {
-                for (UserDefinedTuple tuple : userDefinedTuples) {
-                    if (tuple.getName() == null) {
-                        throw new MojoExecutionException("User defined tuple name is not set");
-                    }
-                    if (tuple.getElements() == null || tuple.getElements().isEmpty()) {
-                        throw new MojoExecutionException("Empty user defined tuple");
-                    }
-                    for (Element elt : tuple.getElements()) {
-                        if (elt.getName() == null) {
-                            throw new MojoExecutionException("Element name is not set");
-                        }
-                        if (elt.getType() == null) {
-                            throw new MojoExecutionException("Element type is not set");
-                        }
-                        // TODO
-                    }
-                }
+            if (configFile != null) {
+                generator.generate(configFile, genSrcDir, logger);
             }
         } catch (IOException e) {
+            throw new MojoExecutionException(e.toString(), e);
+        } catch (JAXBException e) {
+            throw new MojoExecutionException(e.toString(), e);
+        } catch (SAXException e) {
             throw new MojoExecutionException(e.toString(), e);
         }
     }

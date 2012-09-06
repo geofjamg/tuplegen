@@ -98,7 +98,7 @@ public class $className#types implements Serializable, Iterable<Object> {
 #if($j != 1)this.#end$model.getElementName(1)#foreach ($k in $rangeExcludingFirst), #if($j != $k)this.#end$model.getElementName($k)#end
 #end
     public $className#types $methodName($fieldType $fieldName) {
-        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else<>#end(#attrs_scope($i));
+        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else#if ($model.isGeneric())<>#end#end(#attrs_scope($i));
     }
 
 #end
@@ -160,7 +160,7 @@ public class $className#types implements Serializable, Iterable<Object> {
 
 ## Static factory
     public static #types $className#types create(#args) {
-        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else<>#end(#attrs);
+        return new $className#if ($model.getSourceVersion() < 1.7)#types()#else#if ($model.isGeneric())<>#end#end(#attrs);
     }
 
 }

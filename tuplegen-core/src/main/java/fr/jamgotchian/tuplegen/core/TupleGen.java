@@ -16,13 +16,27 @@
  */
 package fr.jamgotchian.tuplegen.core;
 
+import fr.jamgotchian.tuplegen.core.config.GenericTuple;
+import fr.jamgotchian.tuplegen.core.config.TupleConfig;
+import fr.jamgotchian.tuplegen.core.config.UserDefinedTuple;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.util.JAXBSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
@@ -32,16 +46,41 @@ public class TupleGen {
 
     private static final TemplateUtil UTIL = new TemplateUtil();
 
-    private static TupleModel getTupleModel(TupleGenParameters params, TupleGenLogger logger) {
-        String templateDir = "vm/" + params.getSourceLanguage().toString().toLowerCase() + "/";
-        return new GenericTupleModel(templateDir, params.getPackageName(),
-                                     params.getSourceVersion(), params.getSourceEncoding(),
-                                     params.getTupleLength(), params.isLatinName(),
+    private static String getTemplateDir(TupleConfig config) {
+        return "vm/" + config.getSourceLanguage().toString().toLowerCase() + "/";
+    }
+
+    private static float getSourceVersion(TupleConfig config) {
+        return config.getSourceVersion() == null ? 1.6f : config.getSourceVersion();
+    }
+
+    private static String getSourceEncoding(TupleConfig config) {
+        return config.getSourceEncoding() == null ? "UTF-8" : config.getSourceEncoding();
+    }
+
+    private static boolean isLatinName(GenericTuple tuple) {
+        return tuple.isLatinName() == null ? Boolean.TRUE : tuple.isLatinName();
+    }
+
+    private static TupleModel getGenericTupleModel(TupleConfig config, int i, TupleGenLogger logger) {
+        GenericTuple tuple = config.getGenericTuples().get(i);
+        return new GenericTupleModel(getTemplateDir(config), config.getPackageName(),
+                                     getSourceVersion(config), getSourceEncoding(config),
+                                     tuple.getLength(), isLatinName(tuple),
                                      logger);
-//        return new UserDefinedTupleModel(templateDir, params.getPackageName(),
-//                                         params.getSourceVersion(), params.getSourceEncoding(),
-//                                         "result", new String[] {"logs", "returnCode"},
-//                                         new String[] {"String", "Integer"});
+    }
+
+    private static TupleModel getUserDefinedTupleModel(TupleConfig config, int i) {
+        UserDefinedTuple tuple = config.getUserDefinedTuples().get(i);
+        String[] elementsName = new String[tuple.getElements().size()];
+        String[] elementsType = new String[tuple.getElements().size()];
+        for (int j = 0; j < tuple.getElements().size(); j++) {
+            elementsName[j] = tuple.getElements().get(j).getName();
+            elementsType[j] = tuple.getElements().get(j).getType();
+        }
+        return new UserDefinedTupleModel(getTemplateDir(config), config.getPackageName(),
+                                         getSourceVersion(config), getSourceEncoding(config),
+                                         tuple.getName(), elementsName, elementsType);
     }
 
     private final VelocityEngine ve;
@@ -59,11 +98,6 @@ public class TupleGen {
         context.put("model", model);
         context.put("util", UTIL);
         t.merge(context, writer);
-    }
-
-    public void generate(TupleGenParameters params, Writer writer) throws IOException {
-        TupleModel model = getTupleModel(params, null);
-        generate(model, writer);
     }
 
     private void generate(TupleModel model, File genSrcDir, TupleGenLogger logger) throws IOException {
@@ -92,8 +126,53 @@ public class TupleGen {
         }
     }
 
-    public void generate(TupleGenParameters params, File genSrcDir, TupleGenLogger logger) throws IOException {
-        TupleModel model = getTupleModel(params, logger);
-        generate(model, genSrcDir, logger);
+    private void validateConfig(TupleConfig config) throws JAXBException, SAXException, IOException {
+        JAXBContext jc = JAXBContext.newInstance(TupleConfig.class);
+        JAXBSource source = new JAXBSource(jc, config);
+
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema = sf.newSchema(getClass().getResource("/xsd/tupleconfig.xsd"));
+        Validator validator = schema.newValidator();
+        validator.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void warning(SAXParseException exception) throws SAXException {
+                throw new SAXException(exception);
+            }
+
+            @Override
+            public void error(SAXParseException exception) throws SAXException {
+                throw new SAXException(exception);
+            }
+
+            @Override
+            public void fatalError(SAXParseException exception) throws SAXException {
+                throw new SAXException(exception);
+            }
+        });
+        validator.validate(source);
     }
+
+    public void generate(File configFile, File genSrcDir, TupleGenLogger logger)
+            throws JAXBException, SAXException, IOException {
+        JAXBContext jc = JAXBContext.newInstance(TupleConfig.class);
+        Unmarshaller um = jc.createUnmarshaller();
+        TupleConfig config = (TupleConfig) um.unmarshal(configFile);
+        generate(config, genSrcDir, logger, false);
+    }
+
+    public void generate(TupleConfig config, File genSrcDir, TupleGenLogger logger, boolean validate)
+            throws JAXBException, SAXException, IOException {
+        if (validate) {
+            validateConfig(config);
+        }
+        for (int i = 0; i < config.getGenericTuples().size(); i++) {
+            TupleModel model = getGenericTupleModel(config, i, logger);
+            generate(model, genSrcDir, logger);
+        }
+        for (int i = 0; i < config.getUserDefinedTuples().size(); i++) {
+            TupleModel model = getUserDefinedTupleModel(config, i);
+            generate(model, genSrcDir, logger);
+        }
+    }
+
 }
