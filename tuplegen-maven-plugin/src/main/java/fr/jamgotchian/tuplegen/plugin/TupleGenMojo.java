@@ -124,7 +124,7 @@ public class TupleGenMojo extends AbstractMojo {
                     tuple.setLength(length);
                     config.getGenericTuples().add(tuple);
                 }
-                generator.generate(config, genSrcDir, logger, true);
+                generator.generate(config, genSrcDir, logger);
             }
 
             if (configFile != null) {

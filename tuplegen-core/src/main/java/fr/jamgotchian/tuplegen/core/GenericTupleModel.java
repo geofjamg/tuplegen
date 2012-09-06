@@ -77,7 +77,7 @@ public class GenericTupleModel extends AbstractTupleModel {
                              TupleGenLogger logger) {
         super(templateDir, packageName, sourceVersion, sourceEncoding);
         if (tupleLength < 1) {
-            throw new IllegalArgumentException("Tuple length must be < 1");
+            throw new IllegalArgumentException("Tuple length must be > 0");
         }
         if (logger != null) {
             if (tupleLength > TUPLE_LATIN_NAMES.length) {

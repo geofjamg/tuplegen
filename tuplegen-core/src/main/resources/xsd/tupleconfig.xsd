@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="packageName" type="xs:string"/>
-                <xs:element name="sourceVersion" type="xs:float" minOccurs="0"/>
+                <xs:element name="sourceVersion" type="positiveFloat" minOccurs="0"/>
                 <xs:element name="sourceEncoding" type="xs:string" minOccurs="0"/>
                 <xs:element name="sourceLanguage" type="SourceLanguage"/>
                 <xs:element name="genericTuples" type="GenericTuple" minOccurs="0" maxOccurs="unbounded"/>
@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </xs:simpleType>
     <xs:complexType name="GenericTuple">
         <xs:sequence>
-            <xs:element name="length" type="xs:int"/>
+            <xs:element name="length" type="positiveInt"/>
             <xs:element name="latinName" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -54,4 +54,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <xs:element name="elements" type="Element" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+    <xs:simpleType name="positiveInt">
+        <xs:restriction base="xs:int">
+            <xs:minExclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="positiveFloat">
+        <xs:restriction base="xs:float">
+            <xs:minExclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>

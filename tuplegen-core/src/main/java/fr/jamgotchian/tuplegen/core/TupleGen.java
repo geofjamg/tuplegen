@@ -161,14 +161,12 @@ public class TupleGen {
         JAXBContext jc = JAXBContext.newInstance(TupleConfig.class);
         Unmarshaller um = jc.createUnmarshaller();
         TupleConfig config = (TupleConfig) um.unmarshal(configFile);
-        generate(config, genSrcDir, logger, false);
+        generate(config, genSrcDir, logger);
     }
 
-    public void generate(TupleConfig config, File genSrcDir, TupleGenLogger logger, boolean validate)
+    public void generate(TupleConfig config, File genSrcDir, TupleGenLogger logger)
             throws JAXBException, SAXException, IOException {
-        if (validate) {
-            validateConfig(config);
-        }
+        validateConfig(config);
         for (int i = 0; i < config.getGenericTuples().size(); i++) {
             TupleModel model = getGenericTupleModel(config, i, logger);
             generate(model, genSrcDir, logger);
