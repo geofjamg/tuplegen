@@ -106,7 +106,11 @@ public class TupleGen {
         String packageRelDir = model.getPackageName().replace('.', '/');
         File packageDir = new File(genSrcDir, packageRelDir);
         if (logger != null) {
-            logger.info(packageRelDir + "/" + fileName);
+            if (packageRelDir.length() > 0) {
+                logger.info(packageRelDir + "/" + fileName);
+            } else {
+                logger.info(fileName);
+            }
         }
         // ensure package directory exits
         if (!packageDir.exists()) {

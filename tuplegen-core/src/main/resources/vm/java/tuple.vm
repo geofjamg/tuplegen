@@ -1,5 +1,7 @@
+#if ("$!model.getPackageName()" != "")
 package $model.getPackageName();
 
+#end
 import java.io.Serializable;
 import java.util.Iterator;
 #if ($model.getSourceVersion() >= 1.7)
