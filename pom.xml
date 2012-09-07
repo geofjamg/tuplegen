@@ -40,6 +40,14 @@ limitations under the License.
         <url>http://github.com/geofjamg/tuplegen</url>
     </scm>
 
+    <developers>
+        <developer>
+            <id>geofjamg</id>
+            <name>Geoffroy Jamgotchian</name>
+            <email>geoffroy.jamgotchian at gmail.com</email>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.hint.license>apache20</netbeans.hint.license>
