@@ -71,11 +71,11 @@ public class TupleGen {
 
     private static TupleModel getUserDefinedTupleModel(TupleConfig config, int i) {
         UserDefinedTuple tuple = config.getUserDefinedTuples().get(i);
-        String[] elementsName = new String[tuple.getElements().size()];
-        String[] elementsType = new String[tuple.getElements().size()];
-        for (int j = 0; j < tuple.getElements().size(); j++) {
-            elementsName[j] = tuple.getElements().get(j).getName();
-            elementsType[j] = tuple.getElements().get(j).getType();
+        String[] elementsName = new String[tuple.getElement().size()];
+        String[] elementsType = new String[tuple.getElement().size()];
+        for (int j = 0; j < tuple.getElement().size(); j++) {
+            elementsName[j] = tuple.getElement().get(j).getName();
+            elementsType[j] = tuple.getElement().get(j).getType();
         }
         return new UserDefinedTupleModel(getTemplateDir(config), config.getPackageName(),
                                          getSourceVersion(config), getSourceEncoding(config),

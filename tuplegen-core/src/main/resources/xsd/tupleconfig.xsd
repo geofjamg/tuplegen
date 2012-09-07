@@ -50,7 +50,7 @@ limitations under the License.
     <xs:complexType name="UserDefinedTuple">
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
-            <xs:element name="elements" type="Element" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="element" type="Element" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:simpleType name="positiveInt">
