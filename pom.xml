@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <name>TupleGen Project</name>
+    <description>>TupleGen POM project</description>
     <url>http://maven.apache.org</url>
 
     <properties>

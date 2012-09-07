@@ -13,6 +13,7 @@
     <packaging>jar</packaging>
 
     <name>TupleGen Core</name>
+    <description>Generate any length tuple classes in several possible languages</description>
 
     <build>
         <plugins>

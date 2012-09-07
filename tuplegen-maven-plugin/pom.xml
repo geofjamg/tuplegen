@@ -13,6 +13,7 @@
     <packaging>maven-plugin</packaging>
 
     <name>TupleGen Maven Plugin</name>
+    <description>Automate tuple classes generation in a maven project</description>
 
     <dependencies>
         <dependency>
