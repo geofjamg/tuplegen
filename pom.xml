@@ -35,6 +35,11 @@ limitations under the License.
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git://github.com/geofjamg/tuplegen.git</connection>
+        <url>http://github.com/geofjamg/tuplegen</url>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.hint.license>apache20</netbeans.hint.license>
