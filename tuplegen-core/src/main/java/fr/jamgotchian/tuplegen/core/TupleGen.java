@@ -99,7 +99,8 @@ public class TupleGen {
         t.merge(context, writer);
     }
 
-    private void generate(TupleModel model, File genSrcDir, TupleGenLogger logger) throws IOException {
+    private void generate(TupleModel model, File genSrcDir, boolean readOnly,
+                          TupleGenLogger logger) throws IOException {
         String tupleName = model.getTupleName();
         String fileName = UTIL.upperCaseFirstChar(tupleName) + ".java";
         String packageRelDir = model.getPackageName().replace('.', '/');
@@ -124,7 +125,7 @@ public class TupleGen {
         } finally {
             writer.close();
         }
-        if (!tupleFile.setReadOnly()) {
+        if (readOnly && !tupleFile.setReadOnly()) {
             throw new RuntimeException("Cannot set file " + tupleFile + " read only");
         }
     }
@@ -155,24 +156,24 @@ public class TupleGen {
         validator.validate(source);
     }
 
-    public void generate(File configFile, File genSrcDir, TupleGenLogger logger)
+    public void generate(File configFile, File genSrcDir, boolean readOnly, TupleGenLogger logger)
             throws JAXBException, SAXException, IOException {
         JAXBContext jc = JAXBContext.newInstance(TupleConfig.class);
         Unmarshaller um = jc.createUnmarshaller();
         TupleConfig config = (TupleConfig) um.unmarshal(configFile);
-        generate(config, genSrcDir, logger);
+        generate(config, genSrcDir, readOnly, logger);
     }
 
-    public void generate(TupleConfig config, File genSrcDir, TupleGenLogger logger)
+    public void generate(TupleConfig config, File genSrcDir, boolean readOnly, TupleGenLogger logger)
             throws JAXBException, SAXException, IOException {
         validateConfig(config);
         for (int i = 0; i < config.getGenericTuples().size(); i++) {
             TupleModel model = getGenericTupleModel(config, i, logger);
-            generate(model, genSrcDir, logger);
+            generate(model, genSrcDir, readOnly, logger);
         }
         for (int i = 0; i < config.getUserDefinedTuples().size(); i++) {
             TupleModel model = getUserDefinedTupleModel(config, i);
-            generate(model, genSrcDir, logger);
+            generate(model, genSrcDir, readOnly, logger);
         }
     }
 

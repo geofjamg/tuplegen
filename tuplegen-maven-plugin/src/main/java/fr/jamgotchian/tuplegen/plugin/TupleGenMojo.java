@@ -123,11 +123,11 @@ public class TupleGenMojo extends AbstractMojo {
                     tuple.setLength(length);
                     config.getGenericTuples().add(tuple);
                 }
-                generator.generate(config, genSrcDir, logger);
+                generator.generate(config, genSrcDir, true, logger);
             }
 
             if (configFile != null) {
-                generator.generate(configFile, genSrcDir, logger);
+                generator.generate(configFile, genSrcDir, true, logger);
             }
         } catch (IOException e) {
             throw new MojoExecutionException(e.toString(), e);
